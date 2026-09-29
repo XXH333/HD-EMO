@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hd-emo"
+version = "1.0.0"
+description = "HD-Emo: extract frame-level speech tokens, emotion, word-level VAD and preference tokens from speech with the HD-Emo codec"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.1",
+    "torchaudio>=2.1",
+    "numpy>=1.24",
+    "transformers>=4.40",
+    "openai-whisper>=20231117",
+    "jiwer>=3.0",
+    "hyperpyyaml",
+    "soundfile",
+    "onnxruntime-gpu>=1.16",
+    "huggingface_hub>=0.23",
+    "modelscope>=1.15",
+]
+
+[project.optional-dependencies]
+# CPU-only machines: replace onnxruntime-gpu with the CPU build
+cpu = ["onnxruntime>=1.16"]
+
+[project.urls]
+Repository = "https://github.com/XXH333/HD-EMO"
+
+[tool.setuptools.packages.find]
+include = ["cosyvoice*"]

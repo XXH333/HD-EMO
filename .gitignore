@@ -1,0 +1,13 @@
+# pretrained models and demo assets downloaded separately
+pretrained_models/
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# editor
+.idea/
+.vscode/
+pretrained_models/

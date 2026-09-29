@@ -1,0 +1,71 @@
+# set random seed, so that you may reproduce your result.
+__set_seed1: !apply:random.seed [1986]
+__set_seed2: !apply:numpy.random.seed [1986]
+__set_seed3: !apply:torch.manual_seed [1986]
+__set_seed4: !apply:torch.cuda.manual_seed_all [1986]
+
+# fixed params
+token_frame_rate: 25
+whisper_path: './pretrained_models/whisper'
+
+# hd-emo codec
+hdemo_codec: !new:cosyvoice.codec.token_codec.AdaptiveSpeechTokenCodec
+    hidden_size: 512
+    speech_token_size: 6561
+    emo_fsq_dim: 3
+    emo_fsq_scale: 5
+    con_fsq_dim: 4
+    con_fsq_scale: 6
+    token_frame_rate: !ref <token_frame_rate>
+    spk: False
+    decoupler: !new:cosyvoice.transformer.encoder.ConformerEncoder
+        input_size: 512
+        output_size: 512
+        attention_heads: 8
+        linear_units: 1024
+        num_blocks: 5
+        dropout_rate: 0.1
+        positional_dropout_rate: 0.1
+        attention_dropout_rate: 0.0
+        normalize_before: True
+        input_layer: 'linear'
+        pos_enc_layer_type: 'rel_pos_espnet'
+        selfattention_layer_type: 'rel_selfattn'
+        use_cnn_module: False
+        macaron_style: False
+        use_dynamic_chunk: False
+        use_dynamic_left_chunk: False
+        static_chunk_size: 1
+    adapter: !new:cosyvoice.transformer.encoder.ConformerEncoder
+        input_size: 512
+        output_size: 512
+        attention_heads: 8
+        linear_units: 1024
+        num_blocks: 3
+        dropout_rate: 0.1
+        positional_dropout_rate: 0.1
+        attention_dropout_rate: 0.0
+        normalize_before: True
+        input_layer: 'linear'
+        pos_enc_layer_type: 'rel_pos_espnet'
+        selfattention_layer_type: 'rel_selfattn'
+        use_cnn_module: False
+        macaron_style: False
+        use_dynamic_chunk: False
+        use_dynamic_left_chunk: False
+        static_chunk_size: 1
+    whisper_encoder: !new:cosyvoice.codec.token_codec.WhisperEncoder
+        whisper_path: !ref <whisper_path>
+    combiner: !new:cosyvoice.transformer.encoder.TransformerEncoder
+        input_size: 512
+        output_size: 512
+        attention_heads: 16
+        linear_units: 2048
+        num_blocks: 8
+        dropout_rate: 0.1
+        positional_dropout_rate: 0.1
+        attention_dropout_rate: 0.0
+        input_layer: 'linear_legacy'
+        pos_enc_layer_type: 'rel_pos_espnet'
+        selfattention_layer_type: 'rel_selfattn'
+        static_chunk_size: 1
